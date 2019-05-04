@@ -8,7 +8,16 @@ class BlogerSpider(scrapy.Spider):
     start_urls = ['http://dtes8617.github.io/']
 
     def parse(self, response):
-        title = response.xpath('//h1/a/text()').extract()
-        folder = response.xpath('//*[@itemprop="name"]/text()').extract()
-        yield {'Title': title, 'Folder': folder}
-		
+        articles =  response.xpath('//*[@class="post-block"]')
+        
+        
+        for article in articles:
+            title = article.xpath('.//a[@class="post-title-link"]/text()').extract_first()
+            tags = article.xpath('.//span[@itemprop="name"]/text()').extract_first()
+            abstract = ''.join(article.xpath('.//div[@class="post-body"]/p/text()').extract())
+
+            print('\n')
+            print(title)
+            print(tags)
+            print(abstract)
+            print('\n')
