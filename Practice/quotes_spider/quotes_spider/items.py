@@ -11,4 +11,8 @@ import scrapy
 class QuotesSpiderItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    
+    
+    tags = scrapy.Field()
+    abstract = scrapy.Field()
+    title = scrapy.Field()

@@ -1,23 +1,29 @@
 # -*- coding: utf-8 -*-
-import scrapy
+from scrapy import Spider
+from scrapy.loader import ItemLoader
+
+from quotes_spider.items import QuotesSpiderItem
 
 
-class BlogerSpider(scrapy.Spider):
+class BlogerSpider(Spider):
     name = 'bloger'
     allowed_domains = ['dtes8617.github.io']
     start_urls = ['http://dtes8617.github.io/']
 
     def parse(self, response):
+        l = ItemLoader(item=QuotesSpiderItem(), response=response)
+
         articles =  response.xpath('//*[@class="post-block"]')
         
-        
         for article in articles:
-            title = article.xpath('.//a[@class="post-title-link"]/text()').extract_first()
+            
             tags = article.xpath('.//span[@itemprop="name"]/text()').extract_first()
             abstract = ''.join(article.xpath('.//div[@class="post-body"]/p/text()').extract())
+            title = article.xpath('.//a[@class="post-title-link"]/text()').extract_first()
 
-            print('\n')
-            print(title)
-            print(tags)
-            print(abstract)
-            print('\n')
+            
+            l.add_value('tags', tags)
+            l.add_value('abstract', abstract)
+            l.add_value('title', title)
+
+        return l.load_item()
