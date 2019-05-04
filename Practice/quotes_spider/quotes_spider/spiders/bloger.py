@@ -8,4 +8,7 @@ class BlogerSpider(scrapy.Spider):
     start_urls = ['http://dtes8617.github.io/']
 
     def parse(self, response):
-        pass
+        title = response.xpath('//h1/a/text()').extract()
+        folder = response.xpath('//*[@itemprop="name"]/text()').extract()
+        yield {'Title': title, 'Folder': folder}
+		
