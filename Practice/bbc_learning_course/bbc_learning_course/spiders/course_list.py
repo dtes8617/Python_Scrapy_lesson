@@ -34,4 +34,6 @@ class CourseListSpider(Spider):
         self.driver.quit()
 
     def parse_lesson(self, response):
-        pass
+        title = response.xpath('//div[@class="widget widget-bbcle-activitytitle"]/h3/text()').extract_first()
+        url = response.request.url
+        yield {'Title': title, 'URL': url}
