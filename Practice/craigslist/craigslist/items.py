@@ -13,4 +13,4 @@ class CraigslistItem(scrapy.Item):
     # name = scrapy.Field()
     date = scrapy.Field()
     title = scrapy.Field()
-    urls = scrapy.Field()
+    url = scrapy.Field()

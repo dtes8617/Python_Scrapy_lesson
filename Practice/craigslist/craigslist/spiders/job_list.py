@@ -7,25 +7,25 @@ from craigslist.items import CraigslistItem
 
 class JobListSpider(scrapy.Spider):
     name = 'job_list'
-    allowed_domains = ['newyork.craigslist.org/search/egr']
+    allowed_domains = ['newyork.craigslist.org']
     start_urls = ['http://newyork.craigslist.org/search/egr/']
 
     def parse(self, response):
-        l = ItemLoader(CraigslistItem(), response = response)
-
-        date = response.xpath('//time[@class="result-date"]/@datetime').extract()
-        title =  response.xpath('//a[@class="result-title hdrlnk"]/text()').extract()
         urls = response.xpath('//a[@class="result-title hdrlnk"]/@href').extract()
 
-        for d, t, u in zip(date, title, urls): 
-            l.add_value('date', d)
-            l.add_value('title', t)
-            l.add_value('urls', u)
-            break
-
-        yield l.load_item()
+        for url in urls: 
+            yield Request(url, callback = self.parse_details) 
         # for url in urls:
         #     yield Request(url, callback = self.parse_details)
 
     def parse_details(self, response):
-        pass
+        l = ItemLoader(CraigslistItem(), response = response)
+        date = response.xpath('//time[@class="date timeago"]/@datetime').extract_first()[:10]
+        title = response.xpath('//span[@id="titletextonly"]/text()').extract_first()
+        url = response.request.url
+        l.add_value('date', date)
+        l.add_value('title', title)
+        l.add_value('url', url)
+        
+        yield l.load_item()
+        # yield {'date': date, 'title':title}
