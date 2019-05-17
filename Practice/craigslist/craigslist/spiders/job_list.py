@@ -12,9 +12,11 @@ class JobListSpider(scrapy.Spider):
 
     def parse(self, response):
         urls = response.xpath('//a[@class="result-title hdrlnk"]/@href').extract()
-
         for url in urls: 
-            yield Request(url, callback = self.parse_details) 
+            yield Request(url, callback = self.parse_details)
+
+        next_page_url = response.xpath('//a[@title="next page"]/@href').extract_first()        
+        yield Request(response.urljoin(next_page_url))
         # for url in urls:
         #     yield Request(url, callback = self.parse_details)
 
