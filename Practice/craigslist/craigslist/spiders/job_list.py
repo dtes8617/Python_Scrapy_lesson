@@ -27,7 +27,7 @@ class JobListSpider(scrapy.Spider):
         url = response.request.url
         compensation = response.xpath('//span[text()="compensation: "]/b/text()').extract_first()
         employment_type = response.xpath('//span[text()="employment type: "]/b/text()').extract_first()
-        image_urls = response.xpath('//div[@id="thumbs"]//a/@href').extract()
+        image_urls = response.xpath('//a[@class="thumb"]/@href').extract()
 
         l.add_value('date', date)
         l.add_value('title', title)
