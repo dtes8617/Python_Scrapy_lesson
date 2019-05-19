@@ -28,6 +28,7 @@ class JobListSpider(scrapy.Spider):
         compensation = response.xpath('//span[text()="compensation: "]/b/text()').extract_first()
         employment_type = response.xpath('//span[text()="employment type: "]/b/text()').extract_first()
         image_urls = response.xpath('//a[@class="thumb"]/@href').extract()
+        description = response.xpath('//section[@id="postingbody"]/text()').extract()
 
         l.add_value('date', date)
         l.add_value('title', title)
@@ -35,6 +36,7 @@ class JobListSpider(scrapy.Spider):
         l.add_value('compensation', compensation)
         l.add_value('employment_type', employment_type)
         l.add_value('image_urls', image_urls)
+        l.add_value('description', description)
 
         yield l.load_item()
         # yield {'date': date, 'title':title}
