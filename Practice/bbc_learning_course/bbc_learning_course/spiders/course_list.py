@@ -53,11 +53,11 @@ class CourseListSpider(Spider):
         mydb = pymysql.connect(host = 'localhost', user = 'root', password = '123456', db = 'lesson')
         cursor = mydb.cursor()
         self.logger.info('cursor constructed.')
-        with open(csv_file, 'r', encoding = 'utf8') as f:
-            csv_data = csv.reader(f)
+        csv_data = csv.reader(open(csv_file))
+        self.logger.info('{}'.format(next(csv_data)))
         # csv_data = csv.reader(open(csv_file, 'r'))
         self.logger.info('opened file')
-        self.logger.info('{}'.format(next(csv_data)))
+        
 
         row_count = 0
         for row in csv_data:

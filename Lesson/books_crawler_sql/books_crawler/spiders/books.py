@@ -60,11 +60,11 @@ class BooksSpider(Spider):
 
         mydb = MySQLdb.connect(host='localhost',
                                user='root',
-                               passwd='foo',
-                               db='books_db')
+                               passwd='123456',
+                               db='lesson')
         cursor = mydb.cursor()
 
-        csv_data = csv.reader(file(csv_file))
+        csv_data = csv.reader(open(csv_file))
 
         row_count = 0
         for row in csv_data:
