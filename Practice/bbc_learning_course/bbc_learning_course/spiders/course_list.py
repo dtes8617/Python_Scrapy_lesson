@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from time import sleep
-
+import pymysql
+import glob
+import os
+import csv
+from bbc_learning_course.items import BbcLearningCourseItem
+from scrapy.loader import ItemLoader
 from scrapy import Spider
 from selenium import webdriver
 from scrapy.selector import Selector
@@ -34,6 +39,33 @@ class CourseListSpider(Spider):
         self.driver.quit()
 
     def parse_lesson(self, response):
+        l = ItemLoader(BbcLearningCourseItem(), response = response)
         title = response.xpath('//div[@class="widget widget-bbcle-activitytitle"]/h3/text()').extract_first()
         url = response.request.url
-        yield {'Title': title, 'URL': url}
+
+        l.add_value('title',title)
+        l.add_value('url',url)
+
+        yield l.load_item()
+
+    def close(self, reason):
+        csv_file = max(glob.iglob('*.csv'), key = os.path.getctime)
+        mydb = pymysql.connect(host = 'localhost', user = 'root', password = '123456', db = 'lesson')
+        cursor = mydb.cursor()
+        self.logger.info('cursor constructed.')
+        with open(csv_file, 'r', encoding = 'utf8') as f:
+            csv_data = csv.reader(f)
+        # csv_data = csv.reader(open(csv_file, 'r'))
+        self.logger.info('opened file')
+        self.logger.info('{}'.format(next(csv_data)))
+
+        row_count = 0
+        for row in csv_data:
+            self.log('the data is {}'.format(row))
+
+            if row_count != 0:
+                cursor.execute('INSERT IGNORE INTO lesson.bbc_learning_course(Title, URL) VALUES(%s, %s)',row)
+                self.logger.info('import {}th row'.format(row_count))
+            row_count+=1
+        mydb.commit()
+        cursor.close()
