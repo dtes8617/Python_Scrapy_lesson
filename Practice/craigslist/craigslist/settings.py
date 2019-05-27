@@ -69,6 +69,10 @@ ITEM_PIPELINES = {
    'craigslist.pipelines.CraigslistPipeline': 2
 }
 IMAGES_STORE = '/Users/jude/Documents/GitHub/Python_Scrapy_lesson/Practice/craigslist/Pictures'
+MONGODB_HOST = 'localhost'
+MONGODB_PORT = 27017
+MONGODB_DB = 'Lesson'
+MONGODB_COLLECTION = 'craigslist'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
